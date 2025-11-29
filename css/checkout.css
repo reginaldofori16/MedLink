@@ -1,0 +1,375 @@
+/* Premium Checkout Page Design */
+:root {
+    --primary-blue: #0066FF;
+    --accent-purple: #8B5CF6;
+    --accent-teal: #14B8A6;
+    --gradient-primary: linear-gradient(135deg, #0066FF 0%, #8B5CF6 50%, #EC4899 100%);
+    --gradient-soft: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 50%, #F5F3FF 100%);
+    --shadow-sm: 0 2px 8px rgba(0, 102, 255, 0.08);
+    --shadow-md: 0 8px 24px rgba(0, 102, 255, 0.12);
+    --shadow-lg: 0 16px 48px rgba(0, 102, 255, 0.16);
+    --shadow-xl: 0 24px 64px rgba(0, 102, 255, 0.20);
+}
+
+body.checkout-body {
+    margin: 0;
+    padding: 48px 5vw 80px 5vw;
+    background: var(--gradient-soft);
+    background-attachment: fixed;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Helvetica, Arial, sans-serif;
+    color: #0F172A;
+    position: relative;
+    overflow-x: hidden;
+}
+
+body.checkout-body::before {
+    content: '';
+    position: fixed;
+    top: -30%;
+    right: -15%;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(0, 102, 255, 0.12) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+    animation: float 25s ease-in-out infinite;
+}
+
+body.checkout-body::after {
+    content: '';
+    position: fixed;
+    bottom: -20%;
+    left: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+    animation: float 30s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(-40px, -40px) rotate(180deg); }
+}
+
+.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    font-size: 0.75rem;
+    color: var(--accent-teal);
+    margin: 0;
+    font-weight: 700;
+}
+
+.checkout-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 1;
+}
+
+.checkout-header h1 {
+    margin: 4px 0 8px 0;
+    font-size: 2.6rem;
+    letter-spacing: -0.03em;
+    font-weight: 800;
+    background: linear-gradient(135deg, #0F172A 0%, #475569 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subtitle {
+    margin: 0;
+    color: #64748B;
+    font-size: 1.05rem;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.ghost-btn {
+    border-radius: 24px;
+    padding: 12px 26px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(0, 102, 255, 0.2);
+    text-decoration: none;
+    color: var(--primary-blue);
+    font-weight: 600;
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+}
+
+.ghost-btn:hover {
+    background: var(--gradient-primary);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: transparent;
+}
+
+.glass {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 28px;
+    box-shadow: var(--shadow-lg);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
+    padding: 32px 36px;
+    margin-bottom: 32px;
+    border: 1px solid rgba(0, 102, 255, 0.1);
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.glass:hover {
+    box-shadow: var(--shadow-xl);
+}
+
+.checkout-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+}
+
+.order-summary h2,
+.payment-section h2 {
+    margin: 0 0 28px 0;
+    font-size: 2rem;
+    letter-spacing: -0.02em;
+    font-weight: 800;
+    color: #0F172A;
+}
+
+.prescription-info {
+    background: var(--gradient-soft);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 28px;
+    border: 2px solid rgba(0, 102, 255, 0.1);
+    box-shadow: var(--shadow-sm);
+}
+
+.prescription-info p {
+    margin: 10px 0;
+    color: #475569;
+    font-size: 1.05rem;
+}
+
+.order-items {
+    margin-bottom: 28px;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(0, 102, 255, 0.1);
+    transition: all 0.2s ease;
+}
+
+.order-item:hover {
+    background: rgba(0, 102, 255, 0.02);
+    border-radius: 16px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.order-item:last-child {
+    border-bottom: none;
+}
+
+.order-item .item-info h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.2rem;
+    color: #0F172A;
+    font-weight: 700;
+}
+
+.order-item .item-info p {
+    margin: 0;
+    color: #64748B;
+    font-size: 0.95rem;
+}
+
+.order-item .item-price {
+    font-size: 1.4rem;
+    font-weight: 800;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.order-summary-totals {
+    background: var(--gradient-soft);
+    border-radius: 20px;
+    padding: 24px;
+    margin-top: 28px;
+    border: 2px solid rgba(0, 102, 255, 0.1);
+    box-shadow: var(--shadow-md);
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    font-size: 1.05rem;
+    color: #475569;
+    font-weight: 500;
+}
+
+.summary-row:last-child {
+    margin-bottom: 0;
+}
+
+.summary-row.total {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #0F172A;
+    padding-top: 16px;
+    border-top: 2px solid rgba(0, 102, 255, 0.2);
+    margin-top: 16px;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.payment-section .form-group {
+    margin-bottom: 24px;
+}
+
+.payment-section label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1E293B;
+}
+
+.payment-section select,
+.payment-section input {
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 16px;
+    border: 2px solid rgba(0, 102, 255, 0.2);
+    background: rgba(255, 255, 255, 0.9);
+    font-size: 1.05rem;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+    box-sizing: border-box;
+}
+
+.payment-section select:focus,
+.payment-section input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    background: #fff;
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.payment-channel-group {
+    margin-bottom: 24px;
+}
+
+.payment-details {
+    background: var(--gradient-soft);
+    border-radius: 20px;
+    padding: 24px;
+    margin-top: 24px;
+    border: 2px solid rgba(0, 102, 255, 0.1);
+    box-shadow: var(--shadow-md);
+}
+
+.delivery-note {
+    background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+    border-radius: 20px;
+    padding: 20px;
+    margin-top: 24px;
+    color: #065F46;
+    text-align: center;
+    font-weight: 600;
+    border: 2px solid rgba(16, 185, 129, 0.2);
+    box-shadow: var(--shadow-sm);
+}
+
+.checkout-submit-btn {
+    width: 100%;
+    padding: 18px 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    border-radius: 28px;
+    border: none;
+    background: var(--gradient-primary);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-lg);
+    margin-top: 28px;
+    position: relative;
+    overflow: hidden;
+}
+
+.checkout-submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.checkout-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
+}
+
+.checkout-submit-btn:hover::before {
+    left: 100%;
+}
+
+@media (max-width: 968px) {
+    .checkout-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .checkout-header {
+        flex-direction: column;
+    }
+    .header-actions {
+        flex-wrap: wrap;
+        width: 100%;
+    }
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    body.checkout-body {
+        padding: 32px 4vw 60px 4vw;
+    }
+    .glass {
+        padding: 24px 20px;
+    }
+}
