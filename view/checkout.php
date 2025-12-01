@@ -35,7 +35,7 @@
                     <span id="orderSubtotal">GHS 0.00</span>
                 </div>
                 <div class="summary-row">
-                    <span>Tax (5%):</span>
+                    <span>Tax and Service Charge(5%):</span>
                     <span id="orderTax">GHS 0.00</span>
                 </div>
                 <div class="summary-row total">
