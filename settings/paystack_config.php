@@ -34,8 +34,28 @@ function paystack_get_public_key() {
 // APPLICATION CONFIGURATION
 // ==================================
 
-// Base URL of your application
-define('APP_BASE_URL', 'http://localhost/MedLink');
+// Base URL of your application - dynamically detected
+// This ensures the callback URL works on both localhost and live server
+function get_app_base_url() {
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    
+    // Get the script path and extract the app folder
+    $script_path = dirname($_SERVER['SCRIPT_NAME']);
+    
+    // Find MedLink in the path
+    if (preg_match('/(.*\/MedLink)/', $script_path, $matches)) {
+        $app_path = $matches[1];
+    } else {
+        // Fallback: assume MedLink is in the root or use script directory parent
+        $app_path = '/MedLink';
+    }
+    
+    return $protocol . '://' . $host . $app_path;
+}
+
+// Set the base URL
+define('APP_BASE_URL', get_app_base_url());
 
 // Callback URL (where Paystack redirects after payment)
 define('PAYSTACK_CALLBACK_URL', APP_BASE_URL . '/view/paystack_callback.php');
