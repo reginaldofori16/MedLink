@@ -34,24 +34,31 @@ function paystack_get_public_key() {
 // APPLICATION CONFIGURATION
 // ==================================
 
-// Base URL of your application - dynamically detected
-// This ensures the callback URL works on both localhost and live server
+// Base URL - dynamically detected from current request
 function get_app_base_url() {
-    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    // Determine protocol (check multiple server variables for compatibility)
+    $is_https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') 
+                || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+                || (!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
+    $protocol = $is_https ? 'https' : 'http';
     
-    // Get the script path and extract the app folder
-    $script_path = dirname($_SERVER['SCRIPT_NAME']);
+    // Get host (includes port if non-standard)
+    $host = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'localhost';
     
-    // Find MedLink in the path
-    if (preg_match('/(.*\/MedLink)/', $script_path, $matches)) {
-        $app_path = $matches[1];
+    // Get the current script path
+    $script_name = $_SERVER['SCRIPT_NAME'] ?? $_SERVER['PHP_SELF'] ?? '';
+    
+    // Find 'MedLink' in the path and extract everything up to and including it
+    $medlink_pos = strpos($script_name, '/MedLink');
+    if ($medlink_pos !== false) {
+        // Extract path from start up to and including '/MedLink'
+        $base_path = substr($script_name, 0, $medlink_pos + strlen('/MedLink'));
     } else {
-        // Fallback: assume MedLink is in the root or use script directory parent
-        $app_path = '/MedLink';
+        // Fallback: try to determine from directory structure
+        $base_path = '/MedLink';
     }
     
-    return $protocol . '://' . $host . $app_path;
+    return $protocol . '://' . $host . $base_path;
 }
 
 // Set the base URL
