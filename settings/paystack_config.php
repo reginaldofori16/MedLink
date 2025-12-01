@@ -34,45 +34,33 @@ function paystack_get_public_key() {
 // APPLICATION CONFIGURATION
 // ==================================
 
-// Base URL - dynamically detected from current request (NO localhost fallback)
+// Your live server URL (used for Paystack callback)
+define('LIVE_SERVER_URL', 'http://169.239.251.102:442/~reginald.ofori/MedLink');
+
+// Base URL detection
 function get_app_base_url() {
-    // Determine protocol
+    // Get the current host
+    $host = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? '';
+    
+    // If we're on the live server (IP-based), use the known URL
+    if (strpos($host, '169.239.251.102') !== false) {
+        return LIVE_SERVER_URL;
+    }
+    
+    // Otherwise, build URL dynamically (for local development)
     $protocol = 'http';
     if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
         $protocol = 'https';
-    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
-        $protocol = 'https';
-    } elseif (!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443) {
-        $protocol = 'https';
     }
     
-    // Get host - MUST come from the actual request
-    $host = '';
-    if (!empty($_SERVER['HTTP_HOST'])) {
-        $host = $_SERVER['HTTP_HOST'];
-    } elseif (!empty($_SERVER['SERVER_NAME'])) {
-        $host = $_SERVER['SERVER_NAME'];
-        // Add port if non-standard
-        if (!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) {
-            $host .= ':' . $_SERVER['SERVER_PORT'];
-        }
-    }
-    
-    // Get the current script path from multiple possible sources
-    $script_path = '';
-    if (!empty($_SERVER['SCRIPT_NAME'])) {
-        $script_path = $_SERVER['SCRIPT_NAME'];
-    } elseif (!empty($_SERVER['PHP_SELF'])) {
-        $script_path = $_SERVER['PHP_SELF'];
-    } elseif (!empty($_SERVER['REQUEST_URI'])) {
-        $script_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-    }
-    
-    // Find 'MedLink' in the path and extract everything up to and including it
-    $base_path = '';
+    // Get script path and find MedLink
+    $script_path = $_SERVER['SCRIPT_NAME'] ?? $_SERVER['PHP_SELF'] ?? '';
     $medlink_pos = strpos($script_path, '/MedLink');
+    
     if ($medlink_pos !== false) {
-        $base_path = substr($script_path, 0, $medlink_pos + 8); // 8 = strlen('/MedLink')
+        $base_path = substr($script_path, 0, $medlink_pos + 8);
+    } else {
+        $base_path = '/MedLink';
     }
     
     return $protocol . '://' . $host . $base_path;
