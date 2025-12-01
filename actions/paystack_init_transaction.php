@@ -9,6 +9,9 @@ require_once('../settings/core.php');
 require_once('../settings/paystack_config.php');
 require_once('../settings/db_class.php');
 
+// FORCE the correct callback URL for live server
+define('FORCE_CALLBACK_URL', 'http://169.239.251.102:442/~reginald.ofori/MedLink/view/paystack_callback.php');
+
 // Set JSON header
 header('Content-Type: application/json');
 
@@ -150,8 +153,17 @@ try {
         ]
     ];
     
-    // Initialize transaction with Paystack
-    $response = paystack_initialize_transaction($email, $total_amount, $reference, $metadata);
+    // Initialize transaction with Paystack - USE FORCED CALLBACK URL
+    $amount_pesewas = (int) ($total_amount * 100);
+    $paystack_data = [
+        'email' => $email,
+        'amount' => $amount_pesewas,
+        'currency' => 'GHS',
+        'reference' => $reference,
+        'callback_url' => FORCE_CALLBACK_URL,  // FORCED to live server URL
+        'metadata' => $metadata
+    ];
+    $response = paystack_make_request('https://api.paystack.co/transaction/initialize', $paystack_data);
     
     // Log the transaction
     paystack_log('Transaction initialized', [
