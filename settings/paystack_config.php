@@ -34,28 +34,45 @@ function paystack_get_public_key() {
 // APPLICATION CONFIGURATION
 // ==================================
 
-// Base URL - dynamically detected from current request
+// Base URL - dynamically detected from current request (NO localhost fallback)
 function get_app_base_url() {
-    // Determine protocol (check multiple server variables for compatibility)
-    $is_https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') 
-                || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
-                || (!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
-    $protocol = $is_https ? 'https' : 'http';
+    // Determine protocol
+    $protocol = 'http';
+    if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+        $protocol = 'https';
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+        $protocol = 'https';
+    } elseif (!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443) {
+        $protocol = 'https';
+    }
     
-    // Get host (includes port if non-standard)
-    $host = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'localhost';
+    // Get host - MUST come from the actual request
+    $host = '';
+    if (!empty($_SERVER['HTTP_HOST'])) {
+        $host = $_SERVER['HTTP_HOST'];
+    } elseif (!empty($_SERVER['SERVER_NAME'])) {
+        $host = $_SERVER['SERVER_NAME'];
+        // Add port if non-standard
+        if (!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) {
+            $host .= ':' . $_SERVER['SERVER_PORT'];
+        }
+    }
     
-    // Get the current script path
-    $script_name = $_SERVER['SCRIPT_NAME'] ?? $_SERVER['PHP_SELF'] ?? '';
+    // Get the current script path from multiple possible sources
+    $script_path = '';
+    if (!empty($_SERVER['SCRIPT_NAME'])) {
+        $script_path = $_SERVER['SCRIPT_NAME'];
+    } elseif (!empty($_SERVER['PHP_SELF'])) {
+        $script_path = $_SERVER['PHP_SELF'];
+    } elseif (!empty($_SERVER['REQUEST_URI'])) {
+        $script_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    }
     
     // Find 'MedLink' in the path and extract everything up to and including it
-    $medlink_pos = strpos($script_name, '/MedLink');
+    $base_path = '';
+    $medlink_pos = strpos($script_path, '/MedLink');
     if ($medlink_pos !== false) {
-        // Extract path from start up to and including '/MedLink'
-        $base_path = substr($script_name, 0, $medlink_pos + strlen('/MedLink'));
-    } else {
-        // Fallback: try to determine from directory structure
-        $base_path = '/MedLink';
+        $base_path = substr($script_path, 0, $medlink_pos + 8); // 8 = strlen('/MedLink')
     }
     
     return $protocol . '://' . $host . $base_path;
